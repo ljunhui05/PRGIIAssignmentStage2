@@ -5,7 +5,7 @@
 //====================================
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 //====================================
-//Student Number: (add your student no)
+//Student Number: (S10220867G)
 //Student Name: Li Jin Jie
 //====================================
 //You can copy paste your code into the functions the list of functions you did and what line it is on is below
@@ -26,6 +26,7 @@ using System.Diagnostics.CodeAnalysis;
 //Universal lists 
 List<Room> roomList = new List<Room>();
 List<Guest> guestList = new List<Guest>();
+
 
 //Universal Arrays
 string[] csvRooms = File.ReadAllLines("Rooms.csv");
@@ -323,6 +324,15 @@ void dispAllGuests()
 {
     Console.WriteLine("+==============================All Guests==============================+");
     //Can copy paste your code here
+    string[] guestInfo = File.ReadAllLines("Guests.csv");
+    string[] guestHeader = guestInfo[0].Split(",");
+
+    Console.WriteLine("{0,-20} {1,-20} {2,-20} {3,-20}", guestHeader[0], guestHeader[1], guestHeader[2], guestHeader[3]);
+    for (int i = 0; i < guestList.Count; i++)
+    {
+        Guest g = guestList[i];
+        Console.WriteLine("{0,-20} {1,-20} {2,-20} {3,-20}", g.Name, g.passportNum, g.Member.Status, g.Member.Points);
+    }
     Console.WriteLine("+======================================================================+");
 }
 
@@ -613,7 +623,7 @@ void Main()
 
         if (opt == 1)
         {
-            //dispAllGuests();
+            dispAllGuests();
         }
 
         else if (opt == 2)
@@ -623,7 +633,7 @@ void Main()
 
         else if (opt == 3)
         {
-            //registerGuest();
+            registerGuest();
         }
 
         else if (opt == 4)
