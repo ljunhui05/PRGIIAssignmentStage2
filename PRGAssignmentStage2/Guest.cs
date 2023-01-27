@@ -23,13 +23,12 @@ namespace PRGAssignmentStage2
 
 
         //constructors
-        public Guest(string Name, string passportNum, bool isCheckedin, Stays hotelStay, Membership Member)
+        public Guest(string Name, string passportNum, Stays hotelStay, Membership Member)
         {
             this.Name = Name;
             this.passportNum = passportNum;
             this.hotelStay = hotelStay;
             this.Member = Member;
-            this.isCheckedin = isCheckedin;
         }
 
         public string ToString()

@@ -101,14 +101,16 @@ void InitRoomData()
                 bool requireWifi = Convert.ToBoolean(infoStays[6]);
                 bool requireBFast = Convert.ToBoolean(infoStays[7]);
                 
-                StandardRoom newStandardRoom = new StandardRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), true, requireWifi, requireBFast);
+                StandardRoom newStandardRoom = new StandardRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), true);
+                newStandardRoom.requireBreakfast = requireWifi;
+                newStandardRoom.requireBreakfast = requireBFast;
 
                 roomList.Add(newStandardRoom);
             }
 
             else if (booked.Contains(Convert.ToString(roomNum)))
             {
-                StandardRoom newStandardRoom = new StandardRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), false, false, false);
+                StandardRoom newStandardRoom = new StandardRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), false);
 
                 roomList.Add(newStandardRoom);
             }
@@ -121,15 +123,14 @@ void InitRoomData()
             if (!booked.Contains(Convert.ToString(roomNum)))
             {
                 bool additionalBed = Convert.ToBoolean(infoStays[8]);
-                DeluxeRoom newDeluxeRoom = new DeluxeRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), true, additionalBed);
-
+                DeluxeRoom newDeluxeRoom = new DeluxeRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), true);
+                newDeluxeRoom.additionalBed = additionalBed;
                 roomList.Add(newDeluxeRoom);
             }
 
             else if (booked.Contains(Convert.ToString(roomNum)))
             {
-                DeluxeRoom newDeluxeRoom = new DeluxeRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), false, false);
-
+                DeluxeRoom newDeluxeRoom = new DeluxeRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), false);
                 roomList.Add(newDeluxeRoom);
             }
 
@@ -152,14 +153,15 @@ void InitRoomData()
                     bool requireWifi = Convert.ToBoolean(infoStays[10]);
                     bool requireBFast = Convert.ToBoolean(infoStays[11]);
 
-                    StandardRoom newStandardRoom = new StandardRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), true, requireWifi, requireBFast);
-
+                    StandardRoom newStandardRoom = new StandardRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), true);
+                    newStandardRoom.requireWifi = requireWifi;
+                    newStandardRoom.requireBreakfast = requireBFast;
                     roomList.Add(newStandardRoom);
                 }
 
                 else if (booked.Contains(Convert.ToString(roomNum)))
                 {
-                    StandardRoom newStandardRoom = new StandardRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), false, false, false);
+                    StandardRoom newStandardRoom = new StandardRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), false);
 
                     roomList.Add(newStandardRoom);
                 }
@@ -172,14 +174,14 @@ void InitRoomData()
                 if (!booked.Contains(Convert.ToString(roomNum)))
                 {
                     bool additionalBed = Convert.ToBoolean(infoStays[12]);
-                    DeluxeRoom newDeluxeRoom = new DeluxeRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), true, additionalBed);
-
+                    DeluxeRoom newDeluxeRoom = new DeluxeRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), true);
+                    newDeluxeRoom.additionalBed = additionalBed;
                     roomList.Add(newDeluxeRoom);
                 }
 
                 else if (booked.Contains(Convert.ToString(roomNum)))
                 {
-                    DeluxeRoom newDeluxeRoom = new DeluxeRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), false, false);
+                    DeluxeRoom newDeluxeRoom = new DeluxeRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), false);
 
                     roomList.Add(newDeluxeRoom);
                 }
@@ -219,12 +221,11 @@ void InitGuestData()
         string passportNo = infoGuests[1];
         if(guestName == infoStays[0])
         {
-
-            bool isCheckedin = Convert.ToBoolean(infoStays[2]);
             Stays hotelStay = new Stays(default,default);
             Membership member = new Membership(infoGuests[2], Convert.ToInt32(infoGuests[3]));
 
-            Guest newGuest = new Guest(guestName, passportNo, isCheckedin, hotelStay, member);
+            Guest newGuest = new Guest(guestName, passportNo, hotelStay, member);
+            newGuest.isCheckedin = Convert.ToBoolean(infoStays[2]);
             guestList.Add(newGuest);
 
         }

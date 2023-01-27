@@ -18,9 +18,8 @@ namespace PRGAssignmentStage2
 
         //constructors
 
-        public DeluxeRoom(int roomNumber, string bedConfiguration, double dailyRate, bool isAvail , bool additionalBed) : base(roomNumber, bedConfiguration, dailyRate, isAvail)
+        public DeluxeRoom(int roomNumber, string bedConfiguration, double dailyRate, bool isAvail) : base(roomNumber, bedConfiguration, dailyRate, isAvail)
         {
-            this.additionalBed = additionalBed;
         }
 
         public override double CalculateCharges()

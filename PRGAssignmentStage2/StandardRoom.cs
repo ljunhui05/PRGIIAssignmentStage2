@@ -19,11 +19,9 @@ namespace PRGAssignmentStage2
 
         //Constructors
 
-        public StandardRoom(int roomNumber, string bedConfiguration, double dailyRate, bool isAvail, bool requireWifi, bool requireBreakfast)
+        public StandardRoom(int roomNumber, string bedConfiguration, double dailyRate, bool isAvail)
             : base(roomNumber, bedConfiguration, dailyRate, isAvail)
         {
-            this.requireWifi = requireWifi;
-            this.requireBreakfast = requireBreakfast;
         }
 
         public override double CalculateCharges()
