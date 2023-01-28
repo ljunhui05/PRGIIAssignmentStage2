@@ -949,7 +949,7 @@ void checkOutGuest()
     if(guestList[selectedGuest].Member.Status != "Ordinary")
     {
         Console.Write("Enter number of points would you like to use: ");
-        int numPoints = Convert.ToInt32(Console.ReadLine);
+        int numPoints = Convert.ToInt32(Console.ReadLine());
         guestList[selectedGuest].Member.RedeemPoints(numPoints);
         totalBill -= numPoints;
         Console.WriteLine("Your Final Bill is {0}", totalBill);
