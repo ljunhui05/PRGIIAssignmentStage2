@@ -34,7 +34,24 @@ namespace PRGAssignmentStage2
         public double CalculateTotal()
         {
             double total = 0;
-            return total;
+            for (int i = 0; i < roomList.Count; i++)
+            {
+                if (roomList.Count == 0)
+                {
+                    return total;
+                }
+                else
+                {
+                    foreach (Room r in roomList)
+                    {
+                        total += r.CalculateCharges() * checkOutDate.Subtract(checkInDate).Days;
+
+                    }
+                    return total;
+
+                }
+            }
+            return 0;
         }
 
         public string ToString()

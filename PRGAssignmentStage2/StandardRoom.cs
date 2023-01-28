@@ -26,12 +26,33 @@ namespace PRGAssignmentStage2
 
         public override double CalculateCharges()
         {
-            return 0;
+            if (requireWifi == true && requireBreakfast == true)
+            {
+                double chargePerday = dailyRate + 30;
+                return chargePerday;
+            }
+
+            else if (requireWifi == true)
+            {
+                double chargePerday = dailyRate + 10;
+                return chargePerday;
+            }
+
+            else if (requireBreakfast == true)
+            {
+                double chargePerday = dailyRate + 20;
+                return chargePerday;
+            }
+
+            else
+            {
+                return dailyRate;
+            }
         }
 
         public override string ToString()
         {
-            return base.ToString() + "RequiresWifi = " + requireWifi + "RequiresBreakfast = " + requireBreakfast;
+            return base.ToString() + "\tRequiresWifi = " + requireWifi + "\tRequiresBreakfast = " + requireBreakfast;
         }
     }
 }
