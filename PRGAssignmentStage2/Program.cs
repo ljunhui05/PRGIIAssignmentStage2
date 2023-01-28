@@ -21,11 +21,16 @@
 
 using Microsoft.Win32;
 using PRGAssignmentStage2;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 //Universal lists 
 List<Room> roomList = new List<Room>();
 List<Guest> guestList = new List<Guest>();
+List<StandardRoom> standardList = new List<StandardRoom>();
+List<DeluxeRoom> deluxeList = new List<DeluxeRoom>();
+List<Stays>stayList = new List<Stays>();
+
 
 
 //Universal Arrays
@@ -97,10 +102,10 @@ void InitRoomData()
             //Checks if certain rooms are unavailable
             if (!booked.Contains(Convert.ToString(roomNum)))
             {
-                
+
                 bool requireWifi = Convert.ToBoolean(infoStays[6]);
                 bool requireBFast = Convert.ToBoolean(infoStays[7]);
-                
+
                 StandardRoom newStandardRoom = new StandardRoom(Convert.ToInt32(roomNum), bedConfig, Convert.ToDouble(dailyRate), true);
                 newStandardRoom.requireBreakfast = requireWifi;
                 newStandardRoom.requireBreakfast = requireBFast;
@@ -193,11 +198,8 @@ void InitRoomData()
         {
             continue;
         }
-
     }
-
-
-
+    ///////////////////////////////////////////////////////////////////////////////
 
 }
 //*********************************InitGuestData()*********************************//
@@ -219,21 +221,13 @@ void InitGuestData()
         string[] infoGuests = csvGuests[i].Split(',');
         string guestName = infoGuests[0];
         string passportNo = infoGuests[1];
-        if(guestName == infoStays[0])
-        {
-            Stays hotelStay = new Stays(default,default);
-            Membership member = new Membership(infoGuests[2], Convert.ToInt32(infoGuests[3]));
+        
+        Stays hotelStay = new Stays(default,default);
+        Membership member = new Membership(infoGuests[2], Convert.ToInt32(infoGuests[3]));
 
-            Guest newGuest = new Guest(guestName, passportNo, hotelStay, member);
-            newGuest.isCheckedin = Convert.ToBoolean(infoStays[2]);
-            guestList.Add(newGuest);
-
-        }
-
-        else
-        {
-            continue;
-        }
+        Guest newGuest = new Guest(guestName, passportNo, hotelStay, member);
+        newGuest.isCheckedin = Convert.ToBoolean(infoStays[2]);
+        guestList.Add(newGuest);
 
     }
 
@@ -262,6 +256,7 @@ void InitStayData()
         DateTime CheckInDate = Convert.ToDateTime(infoStays[3]);
         DateTime CheckOutDate = Convert.ToDateTime(infoStays[4]);
         Stays newStays = new Stays(CheckInDate, CheckOutDate);
+        stayList.Add(newStays);
         for(int j = 0; j < guestList.Count; j++)
         {
             if (guestList[j].passportNum == passportNo)
@@ -278,7 +273,7 @@ void InitStayData()
                         {
                             if(roomList[l].roomNumber == Convert.ToInt32(roomNum1))
                             {
-                                guestList[j].hotelStay.roomList.Add(roomList[l]);
+                                //guestList[j].hotelStay.roomList.Add(roomList[l]);
                             } 
                         }
 
@@ -286,12 +281,12 @@ void InitStayData()
                         {
                             if (roomList[l].roomNumber == Convert.ToInt32(roomNum1))
                             {
-                                guestList[j].hotelStay.roomList.Add(roomList[l]);
+                                //guestList[j].hotelStay.roomList.Add(roomList[l]);
                             }
 
                             else if (roomList[l].roomNumber == Convert.ToInt32(roomNum2))
                             {
-                                guestList[j].hotelStay.roomList.Add(roomList[l]);
+                                //guestList[j].hotelStay.roomList.Add(roomList[l]);
                             }
                         }
                     }
@@ -319,7 +314,9 @@ void dispMenu()
 }
 
 //*********************************dispAllGuests()*********************************//
-//Displays all guests                                                              //
+//Displays all guests                                                              // 
+//Loops through the guestList                                                      //
+//Print out the guest and its relevant information                                  //
 //*********************************************************************************//
 void dispAllGuests()
 {
@@ -371,11 +368,33 @@ void dispAvailRooms()
 
 //*********************************registerGuest()*********************************//
 //Registers Guests                                                                 //
+//Prompt User for name and password                                                //
+//Create new object for membership (Set status to Ordinary and Point to 0)         //
+//With the new membership object create a new guest object                         //
+//Append the new guest object into the guestList                                   //
+//Write all the new guest detail into the guests.csv file                          //
 //*********************************************************************************//
 void registerGuest()
 {
     Console.WriteLine("+================================Register Guest================================+");
     //Can copy paste your code here
+    Console.Write("Enter your name: ");
+    string name = Console.ReadLine();
+    Console.Write("Enter your passport number: ");
+    string passportNum = Console.ReadLine();
+    Membership add_member = new Membership("Ordinary", 0);
+    guestList.Add(new Guest(name, passportNum, null, add_member));
+
+    Console.WriteLine("");
+
+    string new_guesInfo = name + "," + passportNum + "," + "Ordinary" + "," + "0";
+    using (StreamWriter sw = new StreamWriter("Guests.csv", true))
+    {
+        sw.WriteLine(new_guesInfo);
+    }
+
+
+    Console.WriteLine("Guest Registration Successful");
     Console.WriteLine("+===============================================================================+");
 }
 
@@ -475,6 +494,7 @@ void checkInGuest()
                     if (moreRooms == "Y")
                     {
                         check = true;
+                        
                     }
 
                     else if (moreRooms == "N")
@@ -538,11 +558,72 @@ void checkInGuest()
 
 //*********************************dispGuestStay()*********************************//
 //Displays all Guests Stay details                                                 //
+//Prompt User for personl detail such as passport number                           //
+//Search guest from the list. If guest is in the list loop through his/her roomList//
+//Display the guest detail and room detail                                         //
+//If guest rooList is empty will ask the guest to check in to a room               //
 //*********************************************************************************//
 void dispGuestStay()
 {
+
+    Guest SearchGuest(List<Guest> gList, string passportNum)
+    {
+        for (int i = 0; i < guestList.Count; i++)
+        {
+            Guest g = guestList[i];
+            if (g.passportNum == passportNum)
+            {
+                return g;
+            }
+        }
+        return null;
+    }
+
+    dispAllGuests();
+
     Console.WriteLine("+================================Guest Stay Details================================+");
     //Can copy paste your code here
+
+    Console.WriteLine("");
+    Console.Write("Please enter your passport number: ");
+    string passportNo = Console.ReadLine();
+    Guest findguest = SearchGuest(guestList, passportNo);
+    if (findguest != null)
+    {   
+        if (findguest.hotelStay == null)
+        {
+            Console.WriteLine("You have not check in a room");
+        }
+
+        else
+        {
+            foreach (Room r in findguest.hotelStay.roomList)
+            {
+
+                if (r != null)
+                {
+                    if (r.dailyRate < 140)
+                    {
+                        StandardRoom standardRoom = (StandardRoom)r;
+                        Console.WriteLine("{0,-20} {1,-20} {2,-20} {3,-20} {4,-20} {5,-20}", "Name", "Check In Date", "Check Out Date", "Room", "Wifi", "Breakfast");
+                        Console.WriteLine("{0,-20} {1,-20} {2,-20} {3,-20} {4,-20} {5,-20}", findguest.Name, findguest.hotelStay.checkInDate.ToString("dd/MM/yyyy"), findguest.hotelStay.checkOutDate.ToString("dd/MM/yyyy"), standardRoom.roomNumber, standardRoom.requireWifi, standardRoom.requireBreakfast);
+                        Console.WriteLine("");
+                    }
+                    else
+                    {
+                        DeluxeRoom deluxeRoom = (DeluxeRoom)r;
+                        Console.WriteLine("{0,-20} {1,-20} {2,-20} {3,-20} {4,-20}", "Name", "Check In Date", "Check Out Date", "Room", "Additional Bed");
+                        Console.WriteLine("{0,-20} {1,-20} {2,-20} {3,-20} {4,-20}", findguest.Name, findguest.hotelStay.checkInDate.ToString("dd/MM/yyyy"), findguest.hotelStay.checkOutDate.ToString("dd/MM/yyyy"), deluxeRoom.roomNumber, deluxeRoom.additionalBed);
+                        Console.WriteLine("");
+                    }
+                }
+            } 
+        }
+    }
+    else
+    {
+        Console.WriteLine("You have yet to register");
+    }
     Console.WriteLine("+================================================================================= +");
 }
 
@@ -587,11 +668,107 @@ void extendStay()
 
 //*********************************dispMonthCharge()*********************************//
 //Displays monthly charged amounts breakdown & totaal charged amts for the year      //
+// Loop through each guest roomList                                                  //
+// Calculate the charge per day of the room                                          // 
+// Caculate total charge for a guest by no of days * per day charge                  //
+// Append the data into the 
 //***********************************************************************************//
 void dispMonthCharge()
 {
     Console.WriteLine("+================================Monthly Charge================================+");
     //Can copy paste your code here (if you havent gotten this one to work yet we can work on it tgt)
+    Guest SearchGuest(List<Guest> gList, string passportNum)
+    {
+        for (int i = 0; i < gList.Count; i++)
+        {
+            Guest g = gList[i];
+            if (g.passportNum == passportNum)
+            {
+                return g;
+            }
+        }
+        return null;
+    }
+
+
+
+    Stays SearchYear(List<Stays> sList, int y)
+    {
+        for (int i = 0; i < sList.Count; i++)
+        {
+            Stays s = sList[i];
+            if (s.checkOutDate.Year == y)
+            {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    
+
+    string[] stayInfo = File.ReadAllLines("Stays.csv");
+    List<double> total = new List<double>();
+
+
+    for (int i = 1; i < stayInfo.Length; i++)
+    {
+        double roomCharge = 0;
+        string[]? stayContent = stayInfo[i].Split(',');
+        Guest guest = SearchGuest(guestList, stayContent[1]);
+        List<Room> roomList = guest.hotelStay.roomList;
+
+        double guestCharge = guest.hotelStay.CalculateTotal();
+        Console.WriteLine("{0} {1}", guest.Name, guestCharge);
+        total.Add(guest.hotelStay.checkOutDate.Year);
+        total.Add(guest.hotelStay.checkOutDate.Month);
+        total.Add(guestCharge);
+
+    }
+
+
+
+
+    Console.WriteLine("");
+    Console.Write("Enter year: ");
+    int year = Convert.ToInt32(Console.ReadLine());
+    Stays findDate = SearchYear(stayList, year);
+    DateTime dateTime = new DateTime(year, 01, 01);
+    double monthlyPayment = 0;
+    double yearPayment = 0;
+    for (int i = 1; i <= 12; i++)
+    {
+        for (int j = 0; j < total.Count; j++)
+        {
+            if (dateTime.Year == total[j])
+            {
+                j++;
+                if (dateTime.Month == total[j])
+                {
+                    j++;
+                    monthlyPayment += total[j];
+
+                }
+                else
+                {
+                    j++;
+                }
+            }
+
+        }
+        Console.WriteLine("{0} {1}: ${2}", dateTime.ToString("MMM"), year.ToString(), monthlyPayment.ToString("0.00"));
+        yearPayment += monthlyPayment;
+        
+        monthlyPayment = 0;
+
+
+        dateTime = dateTime.AddMonths(1);
+    }
+    Console.WriteLine("");
+    Console.WriteLine("Total: ${0}", yearPayment);
+
+    total.Clear();
+
     Console.WriteLine("+==============================================================================+");
 }
 
@@ -619,17 +796,21 @@ void checkOutGuest()
 //*********************************Main()*****************************************//
 //Calls all the functions of the program                                          //
 //********************************************************************************//
+
 void Main()
 {
     InitRoomData();
     InitGuestData();
     InitStayData();
+    AssignRoomAttributes();
     bool check = true;
+    
     
 
     while (check == true)
     {
         dispMenu();
+        Console.WriteLine("");
         Console.Write("Please enter your option:");
         int opt = Convert.ToInt32(Console.ReadLine());
 
@@ -655,7 +836,7 @@ void Main()
 
         else if (opt == 5)
         {
-            //dispGuestStay();
+            dispGuestStay();
         }
 
         else if (opt == 6)
@@ -665,7 +846,7 @@ void Main()
 
         else if (opt == 7)
         {
-            //dispMonthCharge();
+            dispMonthCharge();
         }
 
         else if (opt == 8)
@@ -685,3 +866,148 @@ void Main()
 }
 
 Main();
+
+
+void AssignRoomAttributes()
+{
+    string[] csvRooms = File.ReadAllLines("Rooms.csv");
+    string[] csvStays = File.ReadAllLines("Stays.csv");
+
+    List<StandardRoom> tempstandardList = new List<StandardRoom>();
+    List<DeluxeRoom> tempdeluxeList = new List<DeluxeRoom>();
+
+    for (int i = 1; i < csvRooms.Length; i++)
+    {
+        string[] roomContent = csvRooms[i].Split(',');
+
+        if (roomContent[0] == "Standard")
+        {
+            tempstandardList.Add(new StandardRoom(Convert.ToInt32(roomContent[1]), roomContent[2], Convert.ToDouble(roomContent[3]), true));
+        }
+        else
+        {
+            tempdeluxeList.Add(new DeluxeRoom(Convert.ToInt32(roomContent[1]), roomContent[2], Convert.ToDouble(roomContent[3]), true));
+        }
+    }
+
+    Guest SearchGuest(List<Guest> gList, string passportNum)
+    {
+        for (int i = 0; i < guestList.Count; i++)
+        {
+            Guest g = guestList[i];
+            if (g.passportNum == passportNum)
+            {
+                return g;
+            }
+        }
+        return null;
+    }
+
+    StandardRoom SearchStandardRoom(List<StandardRoom> srList, int sdRoomNum)
+    {
+        for (int i = 0; i < srList.Count; i++)
+        {
+            StandardRoom sr = srList[i];
+            if (sr.roomNumber == sdRoomNum)
+            {
+                return sr;
+            }
+        }
+        return null;
+    }
+
+    DeluxeRoom SearchDeluxeRoom(List<DeluxeRoom> drList, int? drRoomNum)
+    {
+        for (int i = 0; i < drList.Count; i++)
+        {
+            DeluxeRoom dr = drList[i];
+            if (dr.roomNumber == drRoomNum)
+            {
+                return dr;
+            }
+        }
+        return null;
+    }
+
+
+
+    for (int j = 1; j < csvStays.Length; j++)
+    {
+        string[] stayContent = csvStays[j].Split(',');
+        for (int i = 1; i < csvRooms.Length; i++)
+        {
+            string[] roomContent = csvRooms[i].Split(',');
+
+            Guest checkguest = SearchGuest(guestList, stayContent[1]);
+            if (roomContent[1] == stayContent[5])
+            {
+                if (stayContent[9] == "")
+                {
+                    stayContent[9] = null;
+                }
+
+                StandardRoom firstStandardRoom = SearchStandardRoom(tempstandardList, Convert.ToInt32(stayContent[5]));
+                DeluxeRoom firstDeluxeRoom = SearchDeluxeRoom(tempdeluxeList, Convert.ToInt32(stayContent[5]));
+                if (firstStandardRoom != null)
+                {
+                    StandardRoom room;
+                    room = new StandardRoom(firstStandardRoom.roomNumber, firstStandardRoom.bedConfiguration, firstStandardRoom.dailyRate, firstStandardRoom.isAvail);
+                    room.requireWifi = Convert.ToBoolean(stayContent[6].ToLower());
+                    room.requireBreakfast = Convert.ToBoolean(stayContent[7].ToLower());
+                    room.isAvail = !(Convert.ToBoolean(stayContent[2].ToLower()));
+
+                    standardList.Add(room);
+                    checkguest.hotelStay.AddRoom(room);
+
+                }
+                if (firstDeluxeRoom != null)
+                {
+                    DeluxeRoom room;
+                    room = new DeluxeRoom(firstDeluxeRoom.roomNumber, firstDeluxeRoom.bedConfiguration, firstDeluxeRoom.dailyRate, firstDeluxeRoom.isAvail);
+                    room.additionalBed = Convert.ToBoolean(stayContent[8].ToLower());
+                    room.isAvail = !(Convert.ToBoolean(stayContent[2].ToLower()));
+                    //new StandardRoom(firstStandardRoom.roomNumber, firstStandardRoom.bedConfiguration, firstStandardRoom.dailyRate, firstStandardRoom.isAvail)
+                    deluxeList.Add(room);
+                    checkguest.hotelStay.AddRoom(room);
+                }
+
+            }
+
+            else if (roomContent[1] == stayContent[9])
+            {
+                int placeholder = 0;
+                if (int.TryParse(stayContent[9], out placeholder))
+                {
+                    StandardRoom secondStandardRoom = SearchStandardRoom(tempstandardList, placeholder);
+                    DeluxeRoom secondDeluxeRoom = SearchDeluxeRoom(tempdeluxeList, placeholder);
+
+                    if (placeholder != null)
+                    {
+                        if (secondStandardRoom != null)
+                        {
+                            StandardRoom room;
+                            room = new StandardRoom(secondStandardRoom.roomNumber, secondStandardRoom.bedConfiguration, secondStandardRoom.dailyRate, secondStandardRoom.isAvail);
+                            room.requireWifi = Convert.ToBoolean(stayContent[6].ToLower());
+                            room.requireBreakfast = Convert.ToBoolean(stayContent[7].ToLower());
+                            room.isAvail = !(Convert.ToBoolean(stayContent[2].ToLower()));
+                            standardList.Add(room);
+                            checkguest.hotelStay.AddRoom(room);
+                        }
+
+                        if (secondDeluxeRoom != null)
+                        {
+                            DeluxeRoom room;
+                            room = new DeluxeRoom(secondDeluxeRoom.roomNumber, secondDeluxeRoom.bedConfiguration, secondDeluxeRoom.dailyRate, secondDeluxeRoom.isAvail);
+                            room.additionalBed = Convert.ToBoolean(stayContent[12].ToLower());
+                            room.isAvail = !(Convert.ToBoolean(stayContent[2].ToLower()));
+                            deluxeList.Add(room);
+                            checkguest.hotelStay.AddRoom(room);
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+}

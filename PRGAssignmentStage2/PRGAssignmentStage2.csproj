@@ -17,6 +17,9 @@
     <None Update="Guests.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Rooms.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Stays.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

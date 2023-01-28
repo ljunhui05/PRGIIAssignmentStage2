@@ -24,12 +24,20 @@ namespace PRGAssignmentStage2
 
         public override double CalculateCharges()
         {
-            return 0;
+            if (additionalBed == true)
+            {
+                double chargePerday = dailyRate + 25;
+                return chargePerday;
+            }
+            else
+            {
+                return dailyRate;
+            }
         }
 
         public override string ToString()
         {
-            return base.ToString() + "AdditionalBed: " + additionalBed;
+            return base.ToString() + "\tAdditionalBed: " + additionalBed;
         }
     }
 }

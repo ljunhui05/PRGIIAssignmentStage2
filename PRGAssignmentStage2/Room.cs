@@ -32,8 +32,8 @@ namespace PRGAssignmentStage2
 
         public override string ToString()
         {
-            return "RoomNumber:" + roomNumber + "BedConfiguration:" + bedConfiguration + "DailyRate:" + dailyRate 
-                + "Availability:" + isAvail;
+            return "RoomNumber:" + roomNumber + "\tBedConfiguration:" + bedConfiguration + "\tDailyRate:" + dailyRate 
+                + "\tAvailability:" + isAvail;
 
         }
     }
