@@ -600,9 +600,20 @@ void dispMonthCharge()
 //*********************************************************************************//
 void checkOutGuest()
 {
+    int selectedGuest = 0;
     Console.WriteLine("+================================ Check Out Guest ================================+");
-    //We will work on this tgt
+    dispAllGuests();
     Console.WriteLine("+=================================================================================+");
+
+    Console.Write("Enter the passport number of guest to check out: ");
+    string passportNum = Console.ReadLine();
+    for (int i = 0 ; i < guestList.Count ; i++)
+    {
+        if (guestList[i].passportNum == passportNum)
+        {
+            selectedGuest = i;
+        }
+    }
 }
 
 //*********************************Main()*****************************************//
