@@ -671,7 +671,10 @@ void extendStay()
 // Loop through each guest roomList                                                  //
 // Calculate the charge per day of the room                                          // 
 // Caculate total charge for a guest by no of days * per day charge                  //
-// Append the data into the 
+// Append the year, month, total charge into the total list                          //
+// Loop through 12 times to display the total charges of every month                 //
+// Month Charges is track the var name call monthlyPayment                           //
+// Annual Charges is track the var name call yearPayment                             //
 //***********************************************************************************//
 void dispMonthCharge()
 {
