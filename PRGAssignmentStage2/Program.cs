@@ -199,7 +199,6 @@ void InitRoomData()
             continue;
         }
     }
-    ///////////////////////////////////////////////////////////////////////////////
 
 }
 //*********************************InitGuestData()*********************************//
@@ -297,6 +296,153 @@ void InitStayData()
     }
 }
 
+//*********************************AssignRoomAttributes()*********************************//
+//Assigns attributes to rooms                                                             //
+//****************************************************************************************//
+void AssignRoomAttributes()
+{
+    string[] csvRooms = File.ReadAllLines("Rooms.csv");
+    string[] csvStays = File.ReadAllLines("Stays.csv");
+
+    List<StandardRoom> tempstandardList = new List<StandardRoom>();
+    List<DeluxeRoom> tempdeluxeList = new List<DeluxeRoom>();
+
+    for (int i = 1; i < csvRooms.Length; i++)
+    {
+        string[] roomContent = csvRooms[i].Split(',');
+
+        if (roomContent[0] == "Standard")
+        {
+            tempstandardList.Add(new StandardRoom(Convert.ToInt32(roomContent[1]), roomContent[2], Convert.ToDouble(roomContent[3]), true));
+        }
+        else
+        {
+            tempdeluxeList.Add(new DeluxeRoom(Convert.ToInt32(roomContent[1]), roomContent[2], Convert.ToDouble(roomContent[3]), true));
+        }
+    }
+
+    Guest SearchGuest(List<Guest> gList, string passportNum)
+    {
+        for (int i = 0; i < guestList.Count; i++)
+        {
+            Guest g = guestList[i];
+            if (g.passportNum == passportNum)
+            {
+                return g;
+            }
+        }
+        return null;
+    }
+
+    StandardRoom SearchStandardRoom(List<StandardRoom> srList, int sdRoomNum)
+    {
+        for (int i = 0; i < srList.Count; i++)
+        {
+            StandardRoom sr = srList[i];
+            if (sr.roomNumber == sdRoomNum)
+            {
+                return sr;
+            }
+        }
+        return null;
+    }
+
+    DeluxeRoom SearchDeluxeRoom(List<DeluxeRoom> drList, int? drRoomNum)
+    {
+        for (int i = 0; i < drList.Count; i++)
+        {
+            DeluxeRoom dr = drList[i];
+            if (dr.roomNumber == drRoomNum)
+            {
+                return dr;
+            }
+        }
+        return null;
+    }
+
+
+
+    for (int j = 1; j < csvStays.Length; j++)
+    {
+        string[] stayContent = csvStays[j].Split(',');
+        for (int i = 1; i < csvRooms.Length; i++)
+        {
+            string[] roomContent = csvRooms[i].Split(',');
+
+            Guest checkguest = SearchGuest(guestList, stayContent[1]);
+            if (roomContent[1] == stayContent[5])
+            {
+                if (stayContent[9] == "")
+                {
+                    stayContent[9] = null;
+                }
+
+                StandardRoom firstStandardRoom = SearchStandardRoom(tempstandardList, Convert.ToInt32(stayContent[5]));
+                DeluxeRoom firstDeluxeRoom = SearchDeluxeRoom(tempdeluxeList, Convert.ToInt32(stayContent[5]));
+                if (firstStandardRoom != null)
+                {
+                    StandardRoom room;
+                    room = new StandardRoom(firstStandardRoom.roomNumber, firstStandardRoom.bedConfiguration, firstStandardRoom.dailyRate, firstStandardRoom.isAvail);
+                    room.requireWifi = Convert.ToBoolean(stayContent[6].ToLower());
+                    room.requireBreakfast = Convert.ToBoolean(stayContent[7].ToLower());
+                    room.isAvail = !(Convert.ToBoolean(stayContent[2].ToLower()));
+
+                    standardList.Add(room);
+                    checkguest.hotelStay.AddRoom(room);
+
+                }
+                if (firstDeluxeRoom != null)
+                {
+                    DeluxeRoom room;
+                    room = new DeluxeRoom(firstDeluxeRoom.roomNumber, firstDeluxeRoom.bedConfiguration, firstDeluxeRoom.dailyRate, firstDeluxeRoom.isAvail);
+                    room.additionalBed = Convert.ToBoolean(stayContent[8].ToLower());
+                    room.isAvail = !(Convert.ToBoolean(stayContent[2].ToLower()));
+                    //new StandardRoom(firstStandardRoom.roomNumber, firstStandardRoom.bedConfiguration, firstStandardRoom.dailyRate, firstStandardRoom.isAvail)
+                    deluxeList.Add(room);
+                    checkguest.hotelStay.AddRoom(room);
+                }
+
+            }
+
+            else if (roomContent[1] == stayContent[9])
+            {
+                int placeholder = 0;
+                if (int.TryParse(stayContent[9], out placeholder))
+                {
+                    StandardRoom secondStandardRoom = SearchStandardRoom(tempstandardList, placeholder);
+                    DeluxeRoom secondDeluxeRoom = SearchDeluxeRoom(tempdeluxeList, placeholder);
+
+                    if (placeholder != null)
+                    {
+                        if (secondStandardRoom != null)
+                        {
+                            StandardRoom room;
+                            room = new StandardRoom(secondStandardRoom.roomNumber, secondStandardRoom.bedConfiguration, secondStandardRoom.dailyRate, secondStandardRoom.isAvail);
+                            room.requireWifi = Convert.ToBoolean(stayContent[6].ToLower());
+                            room.requireBreakfast = Convert.ToBoolean(stayContent[7].ToLower());
+                            room.isAvail = !(Convert.ToBoolean(stayContent[2].ToLower()));
+                            standardList.Add(room);
+                            checkguest.hotelStay.AddRoom(room);
+                        }
+
+                        if (secondDeluxeRoom != null)
+                        {
+                            DeluxeRoom room;
+                            room = new DeluxeRoom(secondDeluxeRoom.roomNumber, secondDeluxeRoom.bedConfiguration, secondDeluxeRoom.dailyRate, secondDeluxeRoom.isAvail);
+                            room.additionalBed = Convert.ToBoolean(stayContent[12].ToLower());
+                            room.isAvail = !(Convert.ToBoolean(stayContent[2].ToLower()));
+                            deluxeList.Add(room);
+                            checkguest.hotelStay.AddRoom(room);
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+}
+
 //*********************************dispMenu()*********************************//
 //Prints the menu                                                             //
 //****************************************************************************//
@@ -309,6 +455,8 @@ void dispMenu()
     Console.WriteLine("4: Check-In");
     Console.WriteLine("5: Display details of guest");
     Console.WriteLine("6: Extend your stay");
+    Console.WriteLine("7: Display monthly charged amounts and total charged amounts for the year");
+    Console.WriteLine("8: Check-Out");
     Console.WriteLine("0: Exit");
     Console.WriteLine("+=====================================+");
 }
@@ -425,7 +573,6 @@ void registerGuest()
 void checkInGuest()
 {
     int selectedGuest = 0;
-    bool check = true;
     dispAllGuests();
 
     Console.Write("Enter the passport number of guest to start CheckIn: ");
@@ -443,8 +590,9 @@ void checkInGuest()
     Console.Write("Enter CheckOut Date:");
     DateTime CheckOutDate = Convert.ToDateTime(Console.ReadLine());
     Stays newStays = new Stays(CheckInDate, CheckOutDate);
+    checkInMoreRoom(); 
 
-    while (check == true)
+    void checkInMoreRoom()
     {
         dispAvailRooms();
 
@@ -493,75 +641,77 @@ void checkInGuest()
                     string moreRooms = Console.ReadLine();
                     if (moreRooms == "Y")
                     {
-                        check = true;
-                        
+                        checkInMoreRoom();
                     }
 
                     else if (moreRooms == "N")
                     {
                         guestList[selectedGuest].hotelStay = newStays;
                         guestList[selectedGuest].isCheckedin = true;
+                        Console.WriteLine("+==========================+");
+                        Console.WriteLine("+Successfully Checked in");
+                        Console.WriteLine("+==========================+");
+                        return;
                     }
 
-                    Console.WriteLine("+==========================+");
-                    Console.WriteLine("+Successfully Checked in");
-                    Console.WriteLine("+==========================+");
-                    check = false;
-                    return;
-                }
-            }
 
-            else if (roomList[i] is DeluxeRoom)
-            {
-                DeluxeRoom d = (DeluxeRoom)roomList[i];
-                Console.Write("Do you require an additional bed [Y/N]: ");
-                string addBed = Console.ReadLine();
-
-                if (addBed == "Y")
-                {
-                    d.additionalBed = true;
                 }
 
-                else if (addBed == "N")
+
+                else if (roomList[i] is DeluxeRoom)
                 {
-                    d.additionalBed = false;
-                }
+                    DeluxeRoom d = (DeluxeRoom)roomList[i];
+                    Console.Write("Do you require an additional bed [Y/N]: ");
+                    string addBed = Console.ReadLine();
 
-                roomList[i].isAvail = false;
-                newStays.roomList.Add(roomList[i]);
-                Console.Write("Do you want to check into more rooms [Y/N]: ");
-                string moreRooms = Console.ReadLine();
-                if (moreRooms == "Y")
-                {
-                    check = true;
-                }
+                    if (addBed == "Y")
+                    {
+                        d.additionalBed = true;
+                    }
 
-                else if (moreRooms == "N")
-                {
-                    guestList[selectedGuest].hotelStay = newStays;
-                    guestList[selectedGuest].isCheckedin = true;
+                    else if (addBed == "N")
+                    {
+                        d.additionalBed = false;
+                    }
+
+                    roomList[i].isAvail = false;
+                    newStays.roomList.Add(roomList[i]);
+                    Console.Write("Do you want to check into more rooms [Y/N]: ");
+                    string moreRooms = Console.ReadLine();
+
+                    if (moreRooms == "Y")
+                    {
+                        checkInMoreRoom();
+                    }
+
+                    else if (moreRooms == "N")
+                    {
+                        guestList[selectedGuest].hotelStay = newStays;
+                        guestList[selectedGuest].isCheckedin = true;
 
 
-                    Console.WriteLine("+==========================+");
-                    Console.WriteLine("+Successfully Checked in");
-                    Console.WriteLine("+==========================+");
-                    check = false;
-                    return;
+                        Console.WriteLine("+==========================+");
+                        Console.WriteLine("+Successfully Checked in");
+                        Console.WriteLine("+==========================+");
+                        return;
+                    }
+
                 }
 
             }
-
         }
-    }
 
+
+    }
 }
+    
 
 //*********************************dispGuestStay()*********************************//
 //Displays all Guests Stay details                                                 //
 //Prompt User for personl detail such as passport number                           //
 //Search guest from the list. If guest is in the list loop through his/her roomList//
 //Display the guest detail and room detail                                         //
-//If guest rooList is empty will ask the guest to check in to a room               //
+//If guest roomList is empty will ask the guest to check in to a room              //
 //*********************************************************************************//
 void dispGuestStay()
 {
@@ -780,9 +930,67 @@ void dispMonthCharge()
 //*********************************************************************************//
 void checkOutGuest()
 {
+    int selectedGuest = 0;
     Console.WriteLine("+================================ Check Out Guest ================================+");
-    //We will work on this tgt
+    dispAllGuests();
     Console.WriteLine("+=================================================================================+");
+
+    Console.Write("Enter the passport number of guest to check out: ");
+    string passportNum = Console.ReadLine();
+    for (int i = 0 ; i < guestList.Count ; i++)
+    {
+        if (guestList[i].passportNum == passportNum)
+        {
+            selectedGuest = i;
+        }
+    }
+
+    double totalBill = guestList[selectedGuest].hotelStay.CalculateTotal();
+
+    Console.WriteLine("Your Total Bill is: {0}",totalBill);
+    Console.WriteLine("Membership: {0} Points: {1}", guestList[selectedGuest].Member.Status, guestList[selectedGuest].Member.Points);
+    if(guestList[selectedGuest].Member.Status != "Ordinary")
+    {
+        Console.Write("Enter number of points would you like to use: ");
+        int numPoints = Convert.ToInt32(Console.ReadLine());
+        guestList[selectedGuest].Member.RedeemPoints(numPoints);
+        totalBill -= numPoints;
+        Console.WriteLine("Your Final Bill is {0}", totalBill);
+        Console.WriteLine("You now have {0} points left in your account", guestList[selectedGuest].Member.Points);
+    }
+
+    else if (guestList[selectedGuest].Member.Status == "Ordinary")
+    {
+        Console.WriteLine("Sorry! Membership status is not eligible to redeem points");
+    }
+
+    Console.WriteLine("Press any key to make payment...");
+    Console.ReadKey();
+    guestList[selectedGuest].Member.EarnPoints(totalBill);
+    Console.WriteLine("You have {0} points in your account",guestList[selectedGuest].Member.Points);
+
+    if (guestList[selectedGuest].Member.Points >= 100)
+    {
+        guestList[selectedGuest].Member.Status = "Silver";
+        Console.WriteLine("Congratulations! You have been upgraded to Silver membership status!");
+    }
+
+    else if (guestList[selectedGuest].Member.Points >= 200)
+    {
+        guestList[selectedGuest].Member.Status = "Gold";
+        Console.WriteLine("Congratulations! You have been upgraded to Gold membership status!");
+    }
+
+    guestList[selectedGuest].isCheckedin = false;
+
+    Console.WriteLine("+=======================================+");
+    Console.WriteLine("+Successfully Checked Out");
+    Console.WriteLine("+Thank you for choosing ICT Hotels!");
+    Console.WriteLine("+We hope to serve you again!");
+    Console.WriteLine("+=======================================+");
+
+
+
 }
 
 //*********************************Main()*****************************************//
@@ -843,7 +1051,7 @@ void Main()
 
         else if (opt == 8)
         {
-            //checkOutGuest();
+            checkOutGuest();
         }
 
         else if (opt == 0)
@@ -858,148 +1066,3 @@ void Main()
 }
 
 Main();
-
-
-void AssignRoomAttributes()
-{
-    string[] csvRooms = File.ReadAllLines("Rooms.csv");
-    string[] csvStays = File.ReadAllLines("Stays.csv");
-
-    List<StandardRoom> tempstandardList = new List<StandardRoom>();
-    List<DeluxeRoom> tempdeluxeList = new List<DeluxeRoom>();
-
-    for (int i = 1; i < csvRooms.Length; i++)
-    {
-        string[] roomContent = csvRooms[i].Split(',');
-
-        if (roomContent[0] == "Standard")
-        {
-            tempstandardList.Add(new StandardRoom(Convert.ToInt32(roomContent[1]), roomContent[2], Convert.ToDouble(roomContent[3]), true));
-        }
-        else
-        {
-            tempdeluxeList.Add(new DeluxeRoom(Convert.ToInt32(roomContent[1]), roomContent[2], Convert.ToDouble(roomContent[3]), true));
-        }
-    }
-
-    Guest SearchGuest(List<Guest> gList, string passportNum)
-    {
-        for (int i = 0; i < guestList.Count; i++)
-        {
-            Guest g = guestList[i];
-            if (g.passportNum == passportNum)
-            {
-                return g;
-            }
-        }
-        return null;
-    }
-
-    StandardRoom SearchStandardRoom(List<StandardRoom> srList, int sdRoomNum)
-    {
-        for (int i = 0; i < srList.Count; i++)
-        {
-            StandardRoom sr = srList[i];
-            if (sr.roomNumber == sdRoomNum)
-            {
-                return sr;
-            }
-        }
-        return null;
-    }
-
-    DeluxeRoom SearchDeluxeRoom(List<DeluxeRoom> drList, int? drRoomNum)
-    {
-        for (int i = 0; i < drList.Count; i++)
-        {
-            DeluxeRoom dr = drList[i];
-            if (dr.roomNumber == drRoomNum)
-            {
-                return dr;
-            }
-        }
-        return null;
-    }
-
-
-
-    for (int j = 1; j < csvStays.Length; j++)
-    {
-        string[] stayContent = csvStays[j].Split(',');
-        for (int i = 1; i < csvRooms.Length; i++)
-        {
-            string[] roomContent = csvRooms[i].Split(',');
-
-            Guest checkguest = SearchGuest(guestList, stayContent[1]);
-            if (roomContent[1] == stayContent[5])
-            {
-                if (stayContent[9] == "")
-                {
-                    stayContent[9] = null;
-                }
-
-                StandardRoom firstStandardRoom = SearchStandardRoom(tempstandardList, Convert.ToInt32(stayContent[5]));
-                DeluxeRoom firstDeluxeRoom = SearchDeluxeRoom(tempdeluxeList, Convert.ToInt32(stayContent[5]));
-                if (firstStandardRoom != null)
-                {
-                    StandardRoom room;
-                    room = new StandardRoom(firstStandardRoom.roomNumber, firstStandardRoom.bedConfiguration, firstStandardRoom.dailyRate, firstStandardRoom.isAvail);
-                    room.requireWifi = Convert.ToBoolean(stayContent[6].ToLower());
-                    room.requireBreakfast = Convert.ToBoolean(stayContent[7].ToLower());
-                    room.isAvail = !(Convert.ToBoolean(stayContent[2].ToLower()));
-
-                    standardList.Add(room);
-                    checkguest.hotelStay.AddRoom(room);
-
-                }
-                if (firstDeluxeRoom != null)
-                {
-                    DeluxeRoom room;
-                    room = new DeluxeRoom(firstDeluxeRoom.roomNumber, firstDeluxeRoom.bedConfiguration, firstDeluxeRoom.dailyRate, firstDeluxeRoom.isAvail);
-                    room.additionalBed = Convert.ToBoolean(stayContent[8].ToLower());
-                    room.isAvail = !(Convert.ToBoolean(stayContent[2].ToLower()));
-                    //new StandardRoom(firstStandardRoom.roomNumber, firstStandardRoom.bedConfiguration, firstStandardRoom.dailyRate, firstStandardRoom.isAvail)
-                    deluxeList.Add(room);
-                    checkguest.hotelStay.AddRoom(room);
-                }
-
-            }
-
-            else if (roomContent[1] == stayContent[9])
-            {
-                int placeholder = 0;
-                if (int.TryParse(stayContent[9], out placeholder))
-                {
-                    StandardRoom secondStandardRoom = SearchStandardRoom(tempstandardList, placeholder);
-                    DeluxeRoom secondDeluxeRoom = SearchDeluxeRoom(tempdeluxeList, placeholder);
-
-                    if (placeholder != null)
-                    {
-                        if (secondStandardRoom != null)
-                        {
-                            StandardRoom room;
-                            room = new StandardRoom(secondStandardRoom.roomNumber, secondStandardRoom.bedConfiguration, secondStandardRoom.dailyRate, secondStandardRoom.isAvail);
-                            room.requireWifi = Convert.ToBoolean(stayContent[6].ToLower());
-                            room.requireBreakfast = Convert.ToBoolean(stayContent[7].ToLower());
-                            room.isAvail = !(Convert.ToBoolean(stayContent[2].ToLower()));
-                            standardList.Add(room);
-                            checkguest.hotelStay.AddRoom(room);
-                        }
-
-                        if (secondDeluxeRoom != null)
-                        {
-                            DeluxeRoom room;
-                            room = new DeluxeRoom(secondDeluxeRoom.roomNumber, secondDeluxeRoom.bedConfiguration, secondDeluxeRoom.dailyRate, secondDeluxeRoom.isAvail);
-                            room.additionalBed = Convert.ToBoolean(stayContent[12].ToLower());
-                            room.isAvail = !(Convert.ToBoolean(stayContent[2].ToLower()));
-                            deluxeList.Add(room);
-                            checkguest.hotelStay.AddRoom(room);
-                        }
-                    }
-                }
-            }
-
-        }
-    }
-
-}
