@@ -966,13 +966,13 @@ void checkOutGuest()
     guestList[selectedGuest].Member.EarnPoints(totalBill);
     Console.WriteLine("You have {0} points in your account",guestList[selectedGuest].Member.Points);
 
-    if (guestList[selectedGuest].Member.Points >= 100)
+    if (guestList[selectedGuest].Member.Points >= 100 && guestList[selectedGuest].Member.Status == "Ordinary")
     {
         guestList[selectedGuest].Member.Status = "Silver";
         Console.WriteLine("Congratulations! You have been upgraded to Silver membership status!");
     }
 
-    else if (guestList[selectedGuest].Member.Points >= 200)
+    else if (guestList[selectedGuest].Member.Points >= 200 && guestList[selectedGuest].Member.Status == "Silver")
     {
         guestList[selectedGuest].Member.Status = "Gold";
         Console.WriteLine("Congratulations! You have been upgraded to Gold membership status!");
