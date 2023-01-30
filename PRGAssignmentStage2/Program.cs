@@ -528,8 +528,30 @@ void registerGuest()
     //Can copy paste your code here
     Console.Write("Enter your name: ");
     string name = Console.ReadLine();
-    Console.Write("Enter your passport number: ");
-    string passportNum = Console.ReadLine();
+    string passportNum;
+    while (true)
+    {
+        try
+        {
+
+            Console.Write("Enter the passport number: ");
+            passportNum = Console.ReadLine();
+            int check = 0;
+            char validate = passportNum[0];
+            if (Int32.TryParse(validate.ToString(), out check))
+            {
+                Console.WriteLine("Please enter a correct passport number");
+                continue;
+            }
+
+            break;
+        }
+        catch (Exception)
+        {
+
+            Console.WriteLine("Please enter your passport number again");
+        }
+    }
     Membership add_member = new Membership("Ordinary", 0);
     guestList.Add(new Guest(name, passportNum, null, add_member));
 
@@ -574,9 +596,30 @@ void checkInGuest()
 {
     int selectedGuest = 0;
     dispAllGuests();
+    string opt; 
+    while (true)
+    {
+        try
+        {
+            
+            Console.Write("Enter the passport number of guest to start CheckIn: ");
+            opt = Console.ReadLine();
+            int check = 0;
+            char validate = opt[0];
+            if (Int32.TryParse(validate.ToString(), out check))
+            {
+                Console.WriteLine("Please enter a correct passport number");
+                continue;
+            }
+            
+            break;
+        }
+        catch (Exception)
+        {
 
-    Console.Write("Enter the passport number of guest to start CheckIn: ");
-    string opt = Console.ReadLine();
+            Console.WriteLine("Please enter your passport number again");
+        }
+    }
     for (int i = 0; i < guestList.Count; i++)
     {
         if (opt == guestList[i].passportNum)
@@ -584,20 +627,72 @@ void checkInGuest()
             selectedGuest = i;
         }
     }
+    DateTime CheckInDate;
+    DateTime CheckOutDate;
+    while (true)
+    {
+        
+        while (true)
+        {
+            try
+            {
+                Console.Write("Enter CheckIn Date:");
+                CheckInDate = Convert.ToDateTime(Console.ReadLine());
+                break;
+            }
+            catch (Exception)
+            {
 
-    Console.Write("Enter CheckIn Date:");
-    DateTime CheckInDate = Convert.ToDateTime(Console.ReadLine());
-    Console.Write("Enter CheckOut Date:");
-    DateTime CheckOutDate = Convert.ToDateTime(Console.ReadLine());
+                Console.WriteLine("Please enter a correect date");
+                Console.WriteLine("");
+            }
+        }
+        
+        while (true)
+        {
+            try
+            {
+                Console.Write("Enter CheckOut Date:");
+                CheckOutDate = Convert.ToDateTime(Console.ReadLine());
+                break;
+            }
+            catch (Exception)
+            {
+
+                Console.WriteLine("Please enter a correct CheckIn date");
+            }
+        } 
+        if(CheckOutDate.Subtract(CheckInDate).Days < 1)
+        {
+            Console.WriteLine("Please enter a correct date");
+            continue;
+        }
+        else
+        {
+            break;
+        }
+    }
     Stays newStays = new Stays(CheckInDate, CheckOutDate);
     checkInMoreRoom(); 
 
     void checkInMoreRoom()
     {
         dispAvailRooms();
+        int roomSelect;
+        while (true)
+        {
+            try
+            {
+                Console.Write("Enter Room Number to select:");
+                roomSelect = Convert.ToInt32(Console.ReadLine());
+                break;
+            }
+            catch (Exception)
+            {
 
-        Console.Write("Enter Room Number to select:");
-        int roomSelect = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Please Select a room again");
+            } 
+        }
 
         for (int i = 0; i < roomList.Count; i++)
         {
@@ -607,10 +702,36 @@ void checkInGuest()
                 if (roomList[i] is StandardRoom)
                 {
                     StandardRoom s = (StandardRoom)roomList[i];
-                    Console.Write("Do you require WiFi [Y/N]: ");
-                    string wifi = Console.ReadLine();
-                    Console.Write("Do you require Breakfast [Y/N]: ");
-                    string breakFast = Console.ReadLine();
+                    string wifi;
+                    while (true)
+                    {
+                        Console.Write("Do you require WiFi [Y/N]: ");
+                        wifi = Console.ReadLine().ToUpper();
+                        if (wifi != "N" && wifi != "Y")
+                        {
+                            Console.WriteLine("Please input a Y or N");
+                            continue;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    string breakFast;
+                    while (true)
+                    {
+                        Console.Write("Do you require Breakfast [Y/N]: ");
+                        breakFast = Console.ReadLine().ToUpper();
+                        if (breakFast != "N" && breakFast != "Y")
+                        {
+                            Console.WriteLine("Please input a Y or N");
+                            continue;
+                        } 
+                        else
+                        {
+                            break;
+                        }
+                    }
                     if (wifi == "Y" && breakFast == "N")
                     {
                         s.requireWifi = true;
@@ -637,8 +758,21 @@ void checkInGuest()
 
                     roomList[i].isAvail = false;
                     newStays.roomList.Add(roomList[i]);
-                    Console.Write("Do you want to check into more rooms [Y/N]: ");
-                    string moreRooms = Console.ReadLine();
+                    string moreRooms;
+                    while (true)
+                    {
+                        Console.Write("Do you want to check into more rooms [Y/N]: ");
+                        moreRooms = Console.ReadLine().ToUpper();
+                        if (moreRooms != "N" && moreRooms != "Y")
+                        {
+                            Console.WriteLine("Please input a Y or N");
+                            continue;
+                        } 
+                        else
+                        {
+                            break;
+                        }    
+                    }
                     if (moreRooms == "Y")
                     {
                         checkInMoreRoom();
@@ -735,8 +869,30 @@ void dispGuestStay()
     //Can copy paste your code here
 
     Console.WriteLine("");
-    Console.Write("Please enter your passport number: ");
-    string passportNo = Console.ReadLine();
+    string passportNo;
+    while (true)
+    {
+        try
+        {
+            
+            Console.Write("Enter the passport number: ");
+            passportNo = Console.ReadLine();
+            int check = 0;
+            char validate = passportNo[0];
+            if (Int32.TryParse(validate.ToString(), out check))
+            {
+                Console.WriteLine("Please enter a correct passport number");
+                continue;
+            }
+            
+            break;
+        }
+        catch (Exception)
+        {
+
+            Console.WriteLine("Please enter your passport number again");
+        }
+    }
     Guest findguest = SearchGuest(guestList, passportNo);
     if (findguest != null)
     {   
@@ -792,8 +948,30 @@ void extendStay()
 {
     int selectedGuest = 0;
     dispAllGuests();
-    Console.Write("Enter the passport number of guest to extend stay: ");
-    string opt = Console.ReadLine();
+    string opt;
+    while (true)
+    {
+        try
+        {
+
+            Console.Write("Enter the passport number of guest to extend stay:  ");
+            opt = Console.ReadLine();
+            int check = 0;
+            char validate = opt[0];
+            if (Int32.TryParse(validate.ToString(), out check))
+            {
+                Console.WriteLine("Please enter a correct passport number");
+                continue;
+            }
+
+            break;
+        }
+        catch (Exception)
+        {
+
+            Console.WriteLine("Please enter your passport number again");
+        }
+    }
     for (int i = 0; i < guestList.Count; i++)
     {
         if (opt == guestList[i].passportNum)
@@ -801,9 +979,21 @@ void extendStay()
             selectedGuest = i;
         }
     }
+    double daysExtend;
+    while (true)
+    {
+        try
+        {
+            Console.Write("Enter number of extra days do you want to stay: ");
+            daysExtend = Convert.ToDouble(Console.ReadLine());
+            break;
+        }
+        catch (Exception)
+        {
 
-    Console.Write("Enter number of extra days do you want to stay: ");
-    double daysExtend = Convert.ToDouble(Console.ReadLine());
+            Console.WriteLine("Please choose  number of extra days again ");
+        }
+    }
     DateTime newStayDays = guestList[selectedGuest].hotelStay.checkOutDate.AddDays(daysExtend);
     guestList[selectedGuest].hotelStay.checkOutDate = newStayDays;
 
@@ -821,7 +1011,10 @@ void extendStay()
 // Loop through each guest roomList                                                  //
 // Calculate the charge per day of the room                                          // 
 // Caculate total charge for a guest by no of days * per day charge                  //
-// Append the data into the 
+// Append the year, month, total charge into the total list                          //
+// Loop through 12 times to display the total charges of every month                 //
+// Month Charges is track the var name call monthlyPayment                           //
+// Annual Charges is track the var name call yearPayment                             //
 //***********************************************************************************//
 void dispMonthCharge()
 {
@@ -863,7 +1056,6 @@ void dispMonthCharge()
 
     for (int i = 1; i < stayInfo.Length; i++)
     {
-        double roomCharge = 0;
         string[]? stayContent = stayInfo[i].Split(',');
         Guest guest = SearchGuest(guestList, stayContent[1]);
         List<Room> roomList = guest.hotelStay.roomList;
@@ -876,12 +1068,27 @@ void dispMonthCharge()
 
     }
 
+    int year;
+    while (true)
+    {
+        try
+        {
+            Console.WriteLine("");
+            Console.Write("Enter year: ");
+            year = Convert.ToInt32(Console.ReadLine());
+            if (year < 0 || year > 9999)
+            {
+                throw new Exception();
+            }
+            break;
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Please enter a valid date");
+        }
+        
+    }
 
-
-
-    Console.WriteLine("");
-    Console.Write("Enter year: ");
-    int year = Convert.ToInt32(Console.ReadLine());
     Stays findDate = SearchYear(stayList, year);
     DateTime dateTime = new DateTime(year, 01, 01);
     double monthlyPayment = 0;
@@ -931,9 +1138,30 @@ void checkOutGuest()
     Console.WriteLine("+================================ Check Out Guest ================================+");
     dispAllGuests();
     Console.WriteLine("+=================================================================================+");
+    string passportNum;
+    while (true)
+    {
+        try
+        {
 
-    Console.Write("Enter the passport number of guest to check out: ");
-    string passportNum = Console.ReadLine();
+            Console.Write("Enter the passport number of guest to check out:  ");
+            passportNum = Console.ReadLine();
+            int check = 0;
+            char validate = passportNum[0];
+            if (Int32.TryParse(validate.ToString(), out check))
+            {
+                Console.WriteLine("Please enter a correct passport number");
+                continue;
+            }
+
+            break;
+        }
+        catch (Exception)
+        {
+
+            Console.WriteLine("Please enter your passport number again");
+        }
+    }
     for (int i = 0 ; i < guestList.Count ; i++)
     {
         if (guestList[i].passportNum == passportNum)
@@ -951,7 +1179,7 @@ void checkOutGuest()
         Console.Write("Enter number of points would you like to use: ");
         int numPoints = Convert.ToInt32(Console.ReadLine());
         guestList[selectedGuest].Member.RedeemPoints(numPoints);
-        totalBill -= numPoints;
+        totalBill -= numPoints/10;
         Console.WriteLine("Your Final Bill is {0}", totalBill);
         Console.WriteLine("You now have {0} points left in your account", guestList[selectedGuest].Member.Points);
     }
@@ -1006,10 +1234,25 @@ void Main()
 
     while (check == true)
     {
-        dispMenu();
-        Console.WriteLine("");
-        Console.Write("Please enter your option:");
-        int opt = Convert.ToInt32(Console.ReadLine());
+        
+        int opt;
+        while (true)
+        {
+            
+            try
+            {
+                dispMenu();
+                Console.WriteLine("");
+                Console.Write("Please enter your option:");
+                opt = Convert.ToInt32(Console.ReadLine());
+                break;
+            }
+            catch (Exception)
+            {
+
+                Console.WriteLine("Invalid input, please enter a number");
+            }
+        }
 
         if (opt == 1)
         {
@@ -1055,6 +1298,10 @@ void Main()
         {
             Console.WriteLine("Goodbye!");
             check = false;
+        }
+        else
+        {
+            Console.WriteLine("Please choose a number from the menu");
         }
 
     }
