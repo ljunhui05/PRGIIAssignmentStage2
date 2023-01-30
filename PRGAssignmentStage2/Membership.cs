@@ -26,13 +26,14 @@ namespace PRGAssignmentStage2
         public void EarnPoints(double amt)
         {
             int pointsEarned = Convert.ToInt32(amt) / 10;
-            Points = pointsEarned;
+            Points += pointsEarned;
         }
 
         public bool RedeemPoints(int points)
         {
             Points -= points;
             return true;
+
         }
 
         public string ToString()

@@ -469,7 +469,6 @@ void dispMenu()
 void dispAllGuests()
 {
     Console.WriteLine("+==============================All Guests==============================+");
-    //Can copy paste your code here
     string[] guestInfo = File.ReadAllLines("Guests.csv");
     string[] guestHeader = guestInfo[0].Split(",");
 
@@ -525,7 +524,6 @@ void dispAvailRooms()
 void registerGuest()
 {
     Console.WriteLine("+================================Register Guest================================+");
-    //Can copy paste your code here
     Console.Write("Enter your name: ");
     string name = Console.ReadLine();
     string passportNum;
@@ -866,7 +864,6 @@ void dispGuestStay()
     dispAllGuests();
 
     Console.WriteLine("+================================Guest Stay Details================================+");
-    //Can copy paste your code here
 
     Console.WriteLine("");
     string passportNo;
@@ -1019,7 +1016,6 @@ void extendStay()
 void dispMonthCharge()
 {
     Console.WriteLine("+================================Monthly Charge================================+");
-    //Can copy paste your code here (if you havent gotten this one to work yet we can work on it tgt)
     Guest SearchGuest(List<Guest> gList, string passportNum)
     {
         for (int i = 0; i < gList.Count; i++)
@@ -1136,8 +1132,9 @@ void checkOutGuest()
 {
     int selectedGuest = 0;
     Console.WriteLine("+================================ Check Out Guest ================================+");
+    Console.WriteLine("");
     dispAllGuests();
-    Console.WriteLine("+=================================================================================+");
+
     string passportNum;
     while (true)
     {
@@ -1174,47 +1171,80 @@ void checkOutGuest()
 
     Console.WriteLine("Your Total Bill is: {0}",totalBill);
     Console.WriteLine("Membership: {0} Points: {1}", guestList[selectedGuest].Member.Status, guestList[selectedGuest].Member.Points);
-    if(guestList[selectedGuest].Member.Status != "Ordinary")
+
+    while (true)
     {
-        Console.Write("Enter number of points would you like to use: ");
-        int numPoints = Convert.ToInt32(Console.ReadLine());
-        guestList[selectedGuest].Member.RedeemPoints(numPoints);
-        totalBill -= numPoints/10;
-        Console.WriteLine("Your Final Bill is {0}", totalBill);
-        Console.WriteLine("You now have {0} points left in your account", guestList[selectedGuest].Member.Points);
+        try
+        {
+            bool check = true;
+            if (guestList[selectedGuest].Member.Status != "Ordinary")
+            {
+                while (check == true)
+                {
+                    Console.Write("Enter number of points would you like to use: ");
+                    int numPoints = Convert.ToInt32(Console.ReadLine());
+
+                    if (numPoints <= guestList[selectedGuest].Member.Points && numPoints >= 0 )
+                    {
+                        guestList[selectedGuest].Member.RedeemPoints(numPoints);
+                        totalBill -= numPoints / 10;
+                        Console.WriteLine("Your Final Bill is {0}", totalBill);
+                        Console.WriteLine("You have {0} points left in your account", guestList[selectedGuest].Member.Points);
+                        check = false;
+                    }
+
+                    else if (numPoints >= guestList[selectedGuest].Member.Points || numPoints < 0)
+                    {
+                        Console.WriteLine("Please enter a valid number of points");
+                        continue;
+                    }
+
+                }
+            }
+
+            else if (guestList[selectedGuest].Member.Status == "Ordinary")
+            {
+                Console.WriteLine("Sorry! Your Membership status is not eligible to redeem points");
+                break;
+            }
+
+
+
+
+            Console.WriteLine("Press any key to make payment...");
+            Console.ReadKey();
+            guestList[selectedGuest].Member.EarnPoints(totalBill);
+            Console.WriteLine("You have {0} points in your account", guestList[selectedGuest].Member.Points);
+
+            if (guestList[selectedGuest].Member.Points >= 100 && guestList[selectedGuest].Member.Status == "Ordinary")
+            {
+                guestList[selectedGuest].Member.Status = "Silver";
+                Console.WriteLine("Congratulations! You have been upgraded to Silver membership status!");
+            }
+
+            else if (guestList[selectedGuest].Member.Points >= 200 && guestList[selectedGuest].Member.Status == "Silver")
+            {
+                guestList[selectedGuest].Member.Status = "Gold";
+                Console.WriteLine("Congratulations! You have been upgraded to Gold membership status!");
+            }
+
+            guestList[selectedGuest].isCheckedin = false;
+
+            Console.WriteLine("+=======================================+");
+            Console.WriteLine("+Successfully Checked Out");
+            Console.WriteLine("+Thank you for choosing ICT Hotels!");
+            Console.WriteLine("+We hope to serve you again!");
+            Console.WriteLine("+=======================================+");
+            Console.WriteLine("");
+            Console.WriteLine("+=================================================================================+");
+            break;
+        }
+
+        catch (Exception)
+        {
+            Console.WriteLine("Please enter a valid number");
+        }
     }
-
-    else if (guestList[selectedGuest].Member.Status == "Ordinary")
-    {
-        Console.WriteLine("Sorry! Membership status is not eligible to redeem points");
-    }
-
-    Console.WriteLine("Press any key to make payment...");
-    Console.ReadKey();
-    guestList[selectedGuest].Member.EarnPoints(totalBill);
-    Console.WriteLine("You have {0} points in your account",guestList[selectedGuest].Member.Points);
-
-    if (guestList[selectedGuest].Member.Points >= 100 && guestList[selectedGuest].Member.Status == "Ordinary")
-    {
-        guestList[selectedGuest].Member.Status = "Silver";
-        Console.WriteLine("Congratulations! You have been upgraded to Silver membership status!");
-    }
-
-    else if (guestList[selectedGuest].Member.Points >= 200 && guestList[selectedGuest].Member.Status == "Silver")
-    {
-        guestList[selectedGuest].Member.Status = "Gold";
-        Console.WriteLine("Congratulations! You have been upgraded to Gold membership status!");
-    }
-
-    guestList[selectedGuest].isCheckedin = false;
-
-    Console.WriteLine("+=======================================+");
-    Console.WriteLine("+Successfully Checked Out");
-    Console.WriteLine("+Thank you for choosing ICT Hotels!");
-    Console.WriteLine("+We hope to serve you again!");
-    Console.WriteLine("+=======================================+");
-
-
 
 }
 
