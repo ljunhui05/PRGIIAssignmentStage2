@@ -530,7 +530,6 @@ void registerGuest()
     Console.Write("Enter your name: ");
     string name = Console.ReadLine();
     string passportNum;
-    int checkPassportNum = 0;
     while (true)
     {
         try
@@ -548,6 +547,7 @@ void registerGuest()
                 continue;
             }
             
+
             break;
         }
 
