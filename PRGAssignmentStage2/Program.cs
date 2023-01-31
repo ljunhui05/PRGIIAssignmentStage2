@@ -21,6 +21,7 @@
 
 using Microsoft.Win32;
 using PRGAssignmentStage2;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
@@ -533,10 +534,12 @@ void registerGuest()
         {
 
             Console.Write("Enter the passport number: ");
-            passportNum = Console.ReadLine();
+            passportNum = Console.ReadLine().ToUpper();
             int check = 0;
+            int check2 = 8;
             char validate = passportNum[0];
-            if (Int32.TryParse(validate.ToString(), out check))
+            char validate2 = passportNum[8];
+            if (Int32.TryParse(validate.ToString(), out check) || passportNum.Length != 9 || Int32.TryParse(validate2.ToString(), out check2))
             {
                 Console.WriteLine("Please enter a correct passport number");
                 continue;
@@ -601,14 +604,18 @@ void checkInGuest()
         {
             
             Console.Write("Enter the passport number of guest to start CheckIn: ");
-            opt = Console.ReadLine();
+            opt = Console.ReadLine().ToUpper();
             int check = 0;
+            int check2 = 8;
             char validate = opt[0];
-            if (Int32.TryParse(validate.ToString(), out check))
+            char validate2 = opt[8];
+            if (Int32.TryParse(validate.ToString(), out check) || opt.Length != 9 || Int32.TryParse(validate2.ToString(), out check2))
             {
                 Console.WriteLine("Please enter a correct passport number");
                 continue;
             }
+
+            
             
             break;
         }
@@ -873,10 +880,12 @@ void dispGuestStay()
         {
             
             Console.Write("Enter the passport number: ");
-            passportNo = Console.ReadLine();
+            passportNo = Console.ReadLine().ToUpper();
             int check = 0;
+            int check2 = 8;
             char validate = passportNo[0];
-            if (Int32.TryParse(validate.ToString(), out check))
+            char validate2 = passportNo[8];
+            if (Int32.TryParse(validate.ToString(), out check) || passportNo.Length != 9 || Int32.TryParse(validate2.ToString(), out check2))
             {
                 Console.WriteLine("Please enter a correct passport number");
                 continue;
@@ -952,10 +961,12 @@ void extendStay()
         {
 
             Console.Write("Enter the passport number of guest to extend stay:  ");
-            opt = Console.ReadLine();
+            opt = Console.ReadLine().ToUpper();
             int check = 0;
+            int check2 = 8;
             char validate = opt[0];
-            if (Int32.TryParse(validate.ToString(), out check))
+            char validate2 = opt[8];
+            if (Int32.TryParse(validate.ToString(), out check) || opt.Length != 9 || Int32.TryParse(validate2.ToString(), out check2))
             {
                 Console.WriteLine("Please enter a correct passport number");
                 continue;
@@ -1142,10 +1153,12 @@ void checkOutGuest()
         {
 
             Console.Write("Enter the passport number of guest to check out:  ");
-            passportNum = Console.ReadLine();
+            passportNum = Console.ReadLine().ToUpper();
             int check = 0;
+            int check2 = 8;
             char validate = passportNum[0];
-            if (Int32.TryParse(validate.ToString(), out check))
+            char validate2 = passportNum[8];
+            if (Int32.TryParse(validate.ToString(), out check) || passportNum.Length != 9 || Int32.TryParse(validate2.ToString(), out check2))
             {
                 Console.WriteLine("Please enter a correct passport number");
                 continue;
@@ -1265,7 +1278,7 @@ void Main()
     while (check == true)
     {
         
-        int opt;
+        int option;
         while (true)
         {
             
@@ -1274,7 +1287,7 @@ void Main()
                 dispMenu();
                 Console.WriteLine("");
                 Console.Write("Please enter your option:");
-                opt = Convert.ToInt32(Console.ReadLine());
+                option = Convert.ToInt32(Console.ReadLine());
                 break;
             }
             catch (Exception)
@@ -1284,47 +1297,47 @@ void Main()
             }
         }
 
-        if (opt == 1)
+        if (option == 1)
         {
             dispAllGuests();
         }
 
-        else if (opt == 2)
+        else if (option == 2)
         {
             dispAvailRooms();
         }
 
-        else if (opt == 3)
+        else if (option == 3)
         {
             registerGuest();
         }
 
-        else if (opt == 4)
+        else if (option == 4)
         {
             checkInGuest();
         }
 
-        else if (opt == 5)
+        else if (option == 5)
         {
             dispGuestStay();
         }
 
-        else if (opt == 6)
+        else if (option == 6)
         {
             extendStay();
         }
 
-        else if (opt == 7)
+        else if (option == 7)
         {
             dispMonthCharge();
         }
 
-        else if (opt == 8)
+        else if (option == 8)
         {
             checkOutGuest();
         }
 
-        else if (opt == 0)
+        else if (option == 0)
         {
             Console.WriteLine("Goodbye!");
             check = false;
