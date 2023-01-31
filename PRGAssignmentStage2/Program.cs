@@ -530,6 +530,7 @@ void registerGuest()
     Console.Write("Enter your name: ");
     string name = Console.ReadLine();
     string passportNum;
+    int checkPassportNum = 0;
     while (true)
     {
         try
@@ -546,12 +547,25 @@ void registerGuest()
                 Console.WriteLine("Please enter a valid passport number");
                 continue;
             }
+            for (int i = 0; i < guestList.Count; i++)
+            {
+                if (guestList[i].passportNum == passportNum)
+                {
+                    checkPassportNum += 1;
+                }
+            }
+
+            if (checkPassportNum == 0)
+            {
+                throw new FormatException();
+            }
 
             break;
         }
+
         catch (FormatException)
         {
-            Console.WriteLine("Please enter your passport number again");
+            Console.WriteLine("Please enter a valid passport number");
         }
 
         catch (Exception)
@@ -603,7 +617,8 @@ void checkInGuest()
 {
     int selectedGuest = 0;
     dispAllGuests();
-    string opt; 
+    string opt;
+    int checkPassportNum = 0;
     while (true)
     {
         try
@@ -621,14 +636,25 @@ void checkInGuest()
                 continue;
             }
 
-            
-            
+            for (int i = 0; i < guestList.Count; i++)
+            {
+                if (guestList[i].passportNum == opt)
+                {
+                    checkPassportNum += 1;
+                }
+            }
+
+            if (checkPassportNum == 0)
+            {
+                throw new FormatException();
+            }
+
             break;
         }
 
         catch (FormatException)
         {
-            Console.WriteLine("Please enter your passport number again");
+            Console.WriteLine("Please enter a valid passport number");
         }
         catch (Exception)
         {
@@ -935,6 +961,7 @@ void dispGuestStay()
 
     Console.WriteLine("");
     string passportNo;
+    int checkPassportNum = 0;
     while (true)
     {
         try
@@ -951,9 +978,28 @@ void dispGuestStay()
                 Console.WriteLine("Please enter a valid passport number");
                 continue;
             }
-            
+
+            for (int i = 0; i < guestList.Count; i++)
+            {
+                if (guestList[i].passportNum == passportNo)
+                {
+                    checkPassportNum += 1;
+                }
+            }
+
+            if (checkPassportNum == 0)
+            {
+                throw new FormatException();
+            }
+
             break;
         }
+
+        catch (FormatException)
+        {
+            Console.WriteLine("Please enter a valid passport number");
+        }
+
         catch (Exception)
         {
             Console.WriteLine("Please enter your passport number again");
@@ -1015,6 +1061,7 @@ void extendStay()
     int selectedGuest = 0;
     dispAllGuests();
     string opt;
+    int checkPassportNum = 0;
     while (true)
     {
         try
@@ -1032,8 +1079,27 @@ void extendStay()
                 continue;
             }
 
+            for (int i = 0; i < guestList.Count; i++)
+            {
+                if (guestList[i].passportNum == opt)
+                {
+                    checkPassportNum += 1;
+                }
+            }
+
+            if (checkPassportNum == 0)
+            {
+                throw new FormatException();
+            }
+
             break;
         }
+
+        catch (FormatException)
+        {
+            Console.WriteLine("Please enter a valid passport number");
+        }
+ 
         catch (Exception)
         {
 
@@ -1205,12 +1271,14 @@ void dispMonthCharge()
 //*********************************************************************************//
 void checkOutGuest()
 {
+
     int selectedGuest = 0;
     Console.WriteLine("+================================ Check Out Guest ================================+");
     Console.WriteLine("");
     dispAllGuests();
 
     string passportNum;
+    int checkPassportNum = 0;
     while (true)
     {
         try
@@ -1228,7 +1296,25 @@ void checkOutGuest()
                 continue;
             }
 
+            for(int i = 0; i < guestList.Count; i++)
+            {
+                if (guestList[i].passportNum == passportNum)
+                {
+                    checkPassportNum += 1;
+                }
+            }
+
+            if(checkPassportNum == 0)
+            {
+                throw new FormatException();
+            }
+
             break;
+        }
+
+        catch (FormatException)
+        {
+            Console.WriteLine("Please enter a valid passport number");
         }
         catch (Exception)
         {
@@ -1236,13 +1322,7 @@ void checkOutGuest()
             Console.WriteLine("Please enter your passport number again");
         }
     }
-    for (int i = 0 ; i < guestList.Count ; i++)
-    {
-        if (guestList[i].passportNum == passportNum)
-        {
-            selectedGuest = i;
-        }
-    }
+    
 
     double totalBill = guestList[selectedGuest].hotelStay.CalculateTotal();
 
@@ -1266,7 +1346,7 @@ void checkOutGuest()
                         if (numPoints <= guestList[selectedGuest].Member.Points && numPoints >= 0)
                         {
                             guestList[selectedGuest].Member.RedeemPoints(numPoints);
-                            totalBill -= numPoints ;
+                            totalBill -= numPoints;
                             Console.WriteLine("Your Final Bill is {0}", totalBill);
                             Console.WriteLine("You have {0} points left in your account", guestList[selectedGuest].Member.Points);
                             check = false;
