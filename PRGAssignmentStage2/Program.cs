@@ -1266,7 +1266,7 @@ void checkOutGuest()
                         if (numPoints <= guestList[selectedGuest].Member.Points && numPoints >= 0)
                         {
                             guestList[selectedGuest].Member.RedeemPoints(numPoints);
-                            totalBill -= numPoints / 10;
+                            totalBill -= numPoints ;
                             Console.WriteLine("Your Final Bill is {0}", totalBill);
                             Console.WriteLine("You have {0} points left in your account", guestList[selectedGuest].Member.Points);
                             check = false;
