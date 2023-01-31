@@ -762,7 +762,7 @@ void checkInGuest()
                     }
 
                     roomList[i].isAvail = false;
-                    newStays.roomList.Add(roomList[i]);
+                    newStays.AddRoom(roomList[i]);
                     string moreRooms;
                     while (true)
                     {
@@ -814,7 +814,7 @@ void checkInGuest()
                     }
 
                     roomList[i].isAvail = false;
-                    newStays.roomList.Add(roomList[i]);
+                    newStays.AddRoom(roomList[i]);
                     Console.Write("Do you want to check into more rooms [Y/N]: ");
                     string moreRooms = Console.ReadLine();
 
