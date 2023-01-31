@@ -543,7 +543,7 @@ void registerGuest()
             char validate2 = passportNum[8];
             if (Int32.TryParse(validate.ToString(), out check) || passportNum.Length != 9 || Int32.TryParse(validate2.ToString(), out check2))
             {
-                Console.WriteLine("Please enter a correct passport number");
+                Console.WriteLine("Please enter a valid passport number");
                 continue;
             }
 
@@ -617,7 +617,7 @@ void checkInGuest()
             char validate2 = opt[8];
             if (Int32.TryParse(validate.ToString(), out check) || opt.Length != 9 || Int32.TryParse(validate2.ToString(), out check2))
             {
-                Console.WriteLine("Please enter a correct passport number");
+                Console.WriteLine("Please enter a valid passport number");
                 continue;
             }
 
@@ -948,7 +948,7 @@ void dispGuestStay()
             char validate2 = passportNo[8];
             if (Int32.TryParse(validate.ToString(), out check) || passportNo.Length != 9 || Int32.TryParse(validate2.ToString(), out check2))
             {
-                Console.WriteLine("Please enter a correct passport number");
+                Console.WriteLine("Please enter a valid passport number");
                 continue;
             }
             
@@ -1028,7 +1028,7 @@ void extendStay()
             char validate2 = opt[8];
             if (Int32.TryParse(validate.ToString(), out check) || opt.Length != 9 || Int32.TryParse(validate2.ToString(), out check2))
             {
-                Console.WriteLine("Please enter a correct passport number");
+                Console.WriteLine("Please enter a valid passport number");
                 continue;
             }
 
@@ -1224,7 +1224,7 @@ void checkOutGuest()
             char validate2 = passportNum[8];
             if (Int32.TryParse(validate.ToString(), out check) || passportNum.Length != 9 || Int32.TryParse(validate2.ToString(), out check2))
             {
-                Console.WriteLine("Please enter a correct passport number");
+                Console.WriteLine("Please enter a valid passport number");
                 continue;
             }
 
