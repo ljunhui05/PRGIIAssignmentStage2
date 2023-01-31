@@ -10,6 +10,9 @@ using System.Xml.Linq;
 //Student Number: S10242387
 //Student Name: Lim JunHui
 //====================================
+//Student Number: S10220867
+//Student Name: Li Jin Jin
+//====================================
 
 namespace PRGAssignmentStage2
 {

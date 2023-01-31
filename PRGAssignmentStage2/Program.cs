@@ -918,6 +918,8 @@ void checkInGuest()
         }
     }
 }
+
+
     
 
 //*********************************dispGuestStay()*********************************//
@@ -1179,16 +1181,14 @@ void dispMonthCharge()
     List<double> total = new List<double>();
 
 
-    for (int i = 1; i < stayInfo.Length; i++)
+    for (int i = 0; i < guestList.Count; i++)
     {
         string[]? stayContent = stayInfo[i].Split(',');
-        Guest guest = SearchGuest(guestList, stayContent[1]);
-        List<Room> roomList = guest.hotelStay.roomList;
 
-        double guestCharge = guest.hotelStay.CalculateTotal();
-        Console.WriteLine("{0} {1}", guest.Name, guestCharge);
-        total.Add(guest.hotelStay.checkOutDate.Year);
-        total.Add(guest.hotelStay.checkOutDate.Month);
+        double guestCharge = guestList[i].hotelStay.CalculateTotal();
+        Console.WriteLine("{0} {1}", guestList[i].Name, guestCharge);
+        total.Add(guestList[i].hotelStay.checkOutDate.Year);
+        total.Add(guestList[i].hotelStay.checkOutDate.Month);
         total.Add(guestCharge);
 
     }
