@@ -704,12 +704,30 @@ void checkInGuest()
     {
         dispAvailRooms();
         int roomSelect;
+        int checkRoom = 0;
         while (true)
         {
             try
             {
                 Console.Write("Enter Room Number to select:");
                 roomSelect = Convert.ToInt32(Console.ReadLine());
+                
+                for(int i = 0; i < roomList.Count; i++)
+                {
+                    if (roomList[i].isAvail == true)
+                    {
+                        if (roomList[i].roomNumber == roomSelect)
+                        {
+                            checkRoom += 1;
+                        }
+                    }
+
+                }
+
+                if(checkRoom == 0)
+                {
+                    throw new FormatException();
+                }
                 break;
             }
 
