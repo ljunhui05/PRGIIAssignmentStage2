@@ -2,11 +2,13 @@
 //====================================
 //Student Number: S10242387
 //Student Name: Lim JunHui
+//Question : 2,4,6,8
 //====================================
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 //====================================
 //Student Number: (S10220867G)
 //Student Name: Li Jin Jie
+//Question : 1,3,5,7
 //====================================
 //You can copy paste your code into the functions the list of functions you did and what line it is on is below
 //Function : Line
