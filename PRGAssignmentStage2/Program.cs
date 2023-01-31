@@ -549,10 +549,14 @@ void registerGuest()
 
             break;
         }
+        catch (FormatException)
+        {
+            Console.WriteLine("Please enter your passport number again");
+        }
+
         catch (Exception)
         {
-
-            Console.WriteLine("Please enter your passport number again");
+            Console.WriteLine("Please enter a valid input!");
         }
     }
     Membership add_member = new Membership("Ordinary", 0);
@@ -621,10 +625,14 @@ void checkInGuest()
             
             break;
         }
+
+        catch (FormatException)
+        {
+            Console.WriteLine("Please enter your passport number again");
+        }
         catch (Exception)
         {
-
-            Console.WriteLine("Please enter your passport number again");
+            Console.WriteLine("Please enter a valid input!");
         }
     }
     for (int i = 0; i < guestList.Count; i++)
@@ -647,11 +655,16 @@ void checkInGuest()
                 CheckInDate = Convert.ToDateTime(Console.ReadLine());
                 break;
             }
+
+            catch (FormatException)
+            {
+                Console.WriteLine("Please enter a valid date");
+            }
+
             catch (Exception)
             {
 
-                Console.WriteLine("Please enter a correect date");
-                Console.WriteLine("");
+                Console.WriteLine("Please enter a valid input!");
             }
         }
         
@@ -663,10 +676,15 @@ void checkInGuest()
                 CheckOutDate = Convert.ToDateTime(Console.ReadLine());
                 break;
             }
+            catch (FormatException)
+            {
+                Console.WriteLine("Please enter a valid date");
+            }
+
             catch (Exception)
             {
 
-                Console.WriteLine("Please enter a correct CheckIn date");
+                Console.WriteLine("Please enter a valid input!");
             }
         } 
         if(CheckOutDate.Subtract(CheckInDate).Days < 1)
@@ -694,6 +712,12 @@ void checkInGuest()
                 roomSelect = Convert.ToInt32(Console.ReadLine());
                 break;
             }
+
+            catch (FormatException)
+            {
+                Console.WriteLine("Please enter a valid room number");
+            }
+
             catch (Exception)
             {
 
@@ -801,41 +825,60 @@ void checkInGuest()
 
                 else if (roomList[i] is DeluxeRoom)
                 {
-                    DeluxeRoom d = (DeluxeRoom)roomList[i];
-                    Console.Write("Do you require an additional bed [Y/N]: ");
-                    string addBed = Console.ReadLine();
-
-                    if (addBed == "Y")
+                    while (true)
                     {
-                        d.additionalBed = true;
+                        DeluxeRoom d = (DeluxeRoom)roomList[i];
+                        Console.Write("Do you require an additional bed [Y/N]: ");
+                        string addBed = Console.ReadLine().ToUpper();
+
+                        if(addBed != "N" && addBed != "Y")
+                        {
+                            Console.WriteLine("Please input a Y or N");
+                            continue;
+                        }
+                        else if (addBed == "Y")
+                        {
+                            d.additionalBed = true;
+                        }
+
+                        else if (addBed == "N")
+                        {
+                            d.additionalBed = false;
+                        }
                     }
 
-                    else if (addBed == "N")
-                    {
-                        d.additionalBed = false;
-                    }
 
                     roomList[i].isAvail = false;
                     newStays.AddRoom(roomList[i]);
                     Console.Write("Do you want to check into more rooms [Y/N]: ");
-                    string moreRooms = Console.ReadLine();
+                    string moreRooms = Console.ReadLine().ToUpper();
 
-                    if (moreRooms == "Y")
+                    while (true)
                     {
-                        checkInMoreRoom();
+                        if (moreRooms != "N" && moreRooms != "Y")
+                        {
+                            Console.WriteLine("Please input a Y or N");
+                            continue;
+                        }
+                        else if (moreRooms == "Y")
+                        {
+                            checkInMoreRoom();
+                        }
+
+                        else if (moreRooms == "N")
+                        {
+                            guestList[selectedGuest].hotelStay = newStays;
+                            guestList[selectedGuest].isCheckedin = true;
+
+
+                            Console.WriteLine("+==========================+");
+                            Console.WriteLine("+Successfully Checked in");
+                            Console.WriteLine("+==========================+");
+                            break;
+                            return;
+                        }
                     }
 
-                    else if (moreRooms == "N")
-                    {
-                        guestList[selectedGuest].hotelStay = newStays;
-                        guestList[selectedGuest].isCheckedin = true;
-
-
-                        Console.WriteLine("+==========================+");
-                        Console.WriteLine("+Successfully Checked in");
-                        Console.WriteLine("+==========================+");
-                        return;
-                    }
 
                 }
 
@@ -897,7 +940,6 @@ void dispGuestStay()
         }
         catch (Exception)
         {
-
             Console.WriteLine("Please enter your passport number again");
         }
     }
@@ -998,10 +1040,14 @@ void extendStay()
             daysExtend = Convert.ToDouble(Console.ReadLine());
             break;
         }
+        catch (FormatException)
+        {
+            Console.WriteLine("Please enter a valid integer number of days");
+        }
+
         catch (Exception)
         {
-
-            Console.WriteLine("Please choose  number of extra days again ");
+            Console.WriteLine("Please enter a valid input!");
         }
     }
     DateTime newStayDays = guestList[selectedGuest].hotelStay.checkOutDate.AddDays(daysExtend);
@@ -1196,23 +1242,38 @@ void checkOutGuest()
             {
                 while (check == true)
                 {
-                    Console.Write("Enter number of points would you like to use: ");
-                    int numPoints = Convert.ToInt32(Console.ReadLine());
-
-                    if (numPoints <= guestList[selectedGuest].Member.Points && numPoints >= 0 )
+                    try
                     {
-                        guestList[selectedGuest].Member.RedeemPoints(numPoints);
-                        totalBill -= numPoints / 10;
-                        Console.WriteLine("Your Final Bill is {0}", totalBill);
-                        Console.WriteLine("You have {0} points left in your account", guestList[selectedGuest].Member.Points);
-                        check = false;
+                        Console.Write("Enter number of points would you like to use: ");
+                        int numPoints = Convert.ToInt32(Console.ReadLine());
+
+                        if (numPoints <= guestList[selectedGuest].Member.Points && numPoints >= 0)
+                        {
+                            guestList[selectedGuest].Member.RedeemPoints(numPoints);
+                            totalBill -= numPoints / 10;
+                            Console.WriteLine("Your Final Bill is {0}", totalBill);
+                            Console.WriteLine("You have {0} points left in your account", guestList[selectedGuest].Member.Points);
+                            check = false;
+                        }
+
+                        else if (numPoints >= guestList[selectedGuest].Member.Points || numPoints < 0)
+                        {
+                            Console.WriteLine("Please enter a valid number of points");
+                            continue;
+                        }
+                        break;
                     }
 
-                    else if (numPoints >= guestList[selectedGuest].Member.Points || numPoints < 0)
+                    catch (FormatException)
                     {
-                        Console.WriteLine("Please enter a valid number of points");
-                        continue;
+                        Console.WriteLine("Please enter a valid integer of points");
                     }
+
+                    catch (Exception)
+                    {
+                        Console.WriteLine("Please enter a valid input!");
+                    }
+
 
                 }
             }
@@ -1257,11 +1318,12 @@ void checkOutGuest()
 
         catch (Exception)
         {
-            Console.WriteLine("Please enter a valid number");
+            Console.WriteLine("Please enter a valid input!");
         }
     }
 
 }
+
 
 //*********************************Main()*****************************************//
 //Calls all the functions of the program                                          //
@@ -1292,10 +1354,14 @@ void Main()
                 option = Convert.ToInt32(Console.ReadLine());
                 break;
             }
+            catch (FormatException)
+            {
+                Console.WriteLine("Invalid input, please enter an integer");
+            }
+
             catch (Exception)
             {
-
-                Console.WriteLine("Invalid input, please enter a number");
+                Console.WriteLine("Please enter a valid input!");
             }
         }
 
