@@ -547,19 +547,7 @@ void registerGuest()
                 Console.WriteLine("Please enter a valid passport number");
                 continue;
             }
-            for (int i = 0; i < guestList.Count; i++)
-            {
-                if (guestList[i].passportNum == passportNum)
-                {
-                    checkPassportNum += 1;
-                }
-            }
-
-            if (checkPassportNum == 0)
-            {
-                throw new FormatException();
-            }
-
+            
             break;
         }
 
@@ -1346,7 +1334,8 @@ void checkOutGuest()
                         if (numPoints <= guestList[selectedGuest].Member.Points && numPoints >= 0)
                         {
                             guestList[selectedGuest].Member.RedeemPoints(numPoints);
-                            totalBill -= numPoints;
+
+                            totalBill -= numPoints ;
                             Console.WriteLine("Your Final Bill is {0}", totalBill);
                             Console.WriteLine("You have {0} points left in your account", guestList[selectedGuest].Member.Points);
                             check = false;
