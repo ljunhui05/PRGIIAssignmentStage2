@@ -716,12 +716,14 @@ void checkInGuest()
             catch (FormatException)
             {
                 Console.WriteLine("Please enter a valid room number");
+                continue;
             }
 
             catch (Exception)
             {
 
                 Console.WriteLine("Please Select a room again");
+                continue;
             } 
         }
 
@@ -807,6 +809,7 @@ void checkInGuest()
                     if (moreRooms == "Y")
                     {
                         checkInMoreRoom();
+                        break;
                     }
 
                     else if (moreRooms == "N")
@@ -816,10 +819,8 @@ void checkInGuest()
                         Console.WriteLine("+==========================+");
                         Console.WriteLine("+Successfully Checked in");
                         Console.WriteLine("+==========================+");
-                        return;
+                        break;
                     }
-
-
                 }
 
 
@@ -839,11 +840,13 @@ void checkInGuest()
                         else if (addBed == "Y")
                         {
                             d.additionalBed = true;
+                            break;
                         }
 
                         else if (addBed == "N")
                         {
                             d.additionalBed = false;
+                            break;
                         }
                     }
 
@@ -863,6 +866,7 @@ void checkInGuest()
                         else if (moreRooms == "Y")
                         {
                             checkInMoreRoom();
+                            break;
                         }
 
                         else if (moreRooms == "N")
@@ -875,17 +879,11 @@ void checkInGuest()
                             Console.WriteLine("+Successfully Checked in");
                             Console.WriteLine("+==========================+");
                             break;
-                            return;
                         }
                     }
-
-
                 }
-
             }
         }
-
-
     }
 }
     
